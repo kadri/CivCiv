@@ -1,16 +1,19 @@
 {
   "name": "civciv",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Incubation app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "sudo node index.js"
   },
-  "author": "",
+  "author": "Kadri Karagoz",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.2",
     "fs-extra": "^2.0.0",
-    "mkdirp": "^0.5.1"
+    "mkdirp": "^0.5.1",
+    "onoff": "^1.1.2",
+    "pigpio": "^0.4.0",
+    "node-dht-sensor": "^0.0.32"
   }
 }

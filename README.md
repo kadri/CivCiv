@@ -1,7 +1,7 @@
 # CivCiv
 Kuluçka Makinesi (Incubation  machine) NodeJS App
 
-Lamp control by DHT11 sensor (temp and humidity) and Relay
+Lamp control by DHT11 sensor (temp and humidity, BCM2835 required for DHT11) and Relay
 Rotate control by sg90 servo
 Web interface 
 
