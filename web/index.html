@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CivCiv Takip</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/segment7" type="text/css"/>
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto+Condensed' type='text/css'>
+    <link rel="stylesheet" href="css/app.css" type="text/css"/>
+    <style>
+        #dvNew{display: none;}
+        #dvEdit{display: none;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="dvNew">
+            <button id="btnStart" class="btn btn-primary">Başla</button>
+        </div>
+        <div id="dvEdit">
+            <button id="btnEnd" class="btn btn-primary">Sonlandır</button>
+            <div id="lblElapsed"></div>
+            <div id="lblTemp"></div>
+            <div id="lblHum"></div>
+            <div id="lblActions"></div>
+            <button id="btnRotate" class="btn btn-primary">Çevir</button>
+            <br/>
+            <button id="btnLamb" class="btn btn-primary">Lamba Toogle</button>
+            <br/>
+
+            <div class="container">
+                <div class="clear-loading spinner">
+                    <span></span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <h1>Kalan süre</h1>
+
+                <div class="clock">
+                    <div class="column days">
+                        <div class="timer" id="days"></div>
+                        <div class="text">DAYS</div>
+                    </div>
+                    <div class="timer days">:</div>
+                    <div class="column">
+                        <div class="timer" id="hours"></div>
+                        <div class="text">HOURS</div>
+                    </div>
+                    <div class="timer">:</div>
+                    <div class="column">
+                        <div class="timer" id="minutes"></div>
+                        <div class="text">MINUTES</div>
+                    </div>
+                    <div class="timer">:</div>
+                    <div class="column">
+                        <div class="timer" id="seconds"></div>
+                        <div class="text">SECONDS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script  src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.4/moment-timezone-with-data.js"></script>
+<script type="text/javascript" src="js/timer.js"></script>
+
+
+    <script type="text/javascript">
+        $(function(){
+            
+
+            $('#btnStart').click(function(){
+                $.getJSON('/startNew', function(config){
+                    getStatus();
+                });
+            });
+            $('#btnEnd').click(function(){
+                $.getJSON('/endNow', function(config){
+                    getStatus();
+                });
+            });
+            $('#btnRotate').click(function(){
+                $.getJSON('/rotate', function(config){
+                    getStatus();
+                });
+            });
+            $('#btnLamb').click(function(){
+                $.getJSON('/lambatoggle', function(config){
+                    getStatus();
+                });
+            });
+
+            getStatus();
+
+            setInterval(getStatus, 10000);
+        });
+
+        function getStatus(){
+            $.getJSON('/getStatus', function(config){
+                if(config.started==false){
+                    $('#dvNew').show();
+                    $('#dvEdit').hide();
+                }
+                else{
+                    $('#dvNew').hide();
+                    $('#dvEdit').show();
+                    $('#lblElapsed').html('Başlama Zamanı : ' + moment(config.starttime).format("YYYY-MM-DD HH:mm") );
+                    $('#lblTemp').html('Sıcaklık: ' + config.temp+ '°C (Min : '+config.min+', Max :'+config.max+')');
+                    $('#lblHum').html('Nem: ' + config.humidity + '%');
+                    var actions = '';
+                    if(config.isfan) actions += ' (Fan Çalışıyor) ';
+                    if(config.isheater) actions += ' (Isıtıcı Çalışıyor) ';
+                    if(config.isturner) actions += ' (Döndürme Çalışıyor) ';
+                    if(config.lambastatus == false) actions += ' (Lamba AÇIK) ';
+                    else if(config.lambastatus) actions += ' (Lamba KAPALI) ';
+                    if(config.lastthreedays) actions += ' (Son 3 Gün) ';
+
+
+                    $('#lblActions').html(actions);
+
+                    var cnfg =  {
+                        startDate: config.starttime,
+                        timeZone: 'Europe/Istanbul',
+                        hours: $('#hours'),
+                        minutes: $('#minutes'),
+                        seconds: $('#seconds'),
+                        newSubMessage: 'and should be back online in a few minutes...'
+                    };
+                    timer(cnfg);
+                }
+            });
+        }
+    </script>
+    
+</body>
+</html>
