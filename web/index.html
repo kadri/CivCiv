@@ -30,6 +30,8 @@
             <br/>
             <button id="btnLamb" class="btn btn-primary">Lamba Toogle</button>
             <br/>
+            <button id="btnSendMail" class="btn btn-primary">Send Mail</button>
+            <br/>
 
             <div class="container">
                 <div class="clear-loading spinner">
@@ -95,7 +97,11 @@
                     getStatus();
                 });
             });
-
+            $('#btnSendMail').click(function(){
+                $.getJSON('/sendmail', function(config){
+                    getStatus();
+                });
+            });
             getStatus();
 
             setInterval(getStatus, 10000);

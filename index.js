@@ -4,6 +4,7 @@ var path = require('path');
 var File = require('./lib/file.js');
 var rotate = require('./lib/rotate.js');
 var lamba = require('./lib/lamba.js');
+var mail = require('./lib/mail.js');
 var lambastatus = 0;
 
 File.loadConfig();
@@ -44,6 +45,9 @@ setInterval(function(){
 	if(File.config.started && File.config.rotating){
 		rotate(File.config.rotaterPIN);
 	}
+	if(File.config.started && File.config.mailnotify){
+		mail(File.config, File.config.temp, File.config.humidity);
+	}
 }, File.config.rotateInterval);
 
 app.use(express.static(path.join(__dirname, '/web/')));
@@ -75,7 +79,12 @@ app.get('/lambatoggle', function(req, res){
 	}
     res.send(File.config);
 });
-
+app.get('/sendmail', function(req, res){
+	if(File.config.mailnotify){
+		mail(File.config, File.config.temp, File.config.humidity);
+	}
+    res.send(File.config);
+});
 app.listen(3000, function () {
   console.log('CivCiv App Calisiyor!');
   
